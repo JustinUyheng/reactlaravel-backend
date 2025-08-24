@@ -11,6 +11,16 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
+// Test route to verify authentication
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('user/profile', function () {
+        return response()->json([
+            'user' => auth()->user(),
+            'message' => 'Profile retrieved successfully'
+        ]);
+    });
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('pending-vendors', [AdminController::class, 'getPendingVendors']);

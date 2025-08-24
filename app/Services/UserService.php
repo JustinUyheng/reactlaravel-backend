@@ -59,14 +59,6 @@ class UserService
     public function logout(): void
     {
         $user = Auth::user();
-
-        if (!$user->store) {
-            throw new HttpResponseException(
-                response()->json([
-                    'message' => 'You need to create your store first.'
-                ], 403)
-            );
-        }
         
         $user->currentAccessToken()->delete();
     }

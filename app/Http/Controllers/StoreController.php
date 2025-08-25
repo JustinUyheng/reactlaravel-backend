@@ -33,4 +33,29 @@ class StoreController extends Controller
             ]
         ], 201);
     }
+
+    public function getVendorStore()
+    {
+        $user = Auth::user();
+
+        if (!$user->isVendor()) {
+            return response()->json([
+                'message' => 'Access denied. Vendor access required.'
+            ], 403);
+        }
+
+        $store = $user->store;
+
+        if(!$store) {
+            return response()->json([
+                'message' => 'No store found for this vendor.',
+                'store' => null
+            ], 404);
+        }
+
+        return response()->json([
+            'message' => 'Store retrieved successfully',
+            'store' => $store
+        ], 200);
+    }
 }

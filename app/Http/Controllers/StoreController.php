@@ -58,4 +58,14 @@ class StoreController extends Controller
             'store' => $store
         ], 200);
     }
+
+    public function index()
+    {
+        $stores = Store::with('user')->get();
+
+        return response()->json([
+            'message' => 'Stores retrieved successfully',
+            'stores' => $stores,
+        ], 200);
+    }
 }

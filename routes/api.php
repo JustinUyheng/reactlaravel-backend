@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('users/vendors', [AdminController::class,'getAllVendors']);
         Route::get('users/customers', [AdminController::class,'getAllCustomers']);
         Route::get('users/{id}', [AdminController::class, 'getUser']);
+        Route::get('feedback', [FeedbackController::class, 'index']);
     });
 });
 

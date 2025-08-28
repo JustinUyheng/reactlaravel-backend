@@ -20,7 +20,16 @@ class StoreController extends Controller
 
     public function createStore(CreateStoreRequest $request)
     {
-        $userId = Auth::user()->id;
+        $user = Auth::user();
+
+        // Only approved vendors can create a store
+        if (!$user || !$user->isVendor() || !$user->is_approved) {
+            return response()->json([
+                'message' => 'Only approved vendors can create a store.'
+            ], 403);
+        }
+
+        $userId = $user->id;
 
         $store = $this->storeService->createStore($request->validated(), $userId);
 

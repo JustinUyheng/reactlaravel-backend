@@ -13,7 +13,8 @@ class UserService
 {
     public function register(array $data): User
     {
-        $isVendor = $data['role_id'] === 2;
+        $roleId = (int) ($data['role_id'] ?? 1);
+        $isVendor = $roleId === 2;
         
         return User::create([
             'firstname' => $data['firstname'],
@@ -22,7 +23,7 @@ class UserService
             'gender' => $data['gender'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role_id' => $data['role_id'],
+            'role_id' => $roleId,
             'is_approved' => !$isVendor, // Auto-approve regular users, vendors need admin approval
         ]);
     }

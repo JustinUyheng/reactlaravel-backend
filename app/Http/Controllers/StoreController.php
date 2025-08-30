@@ -210,4 +210,84 @@ class StoreController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Get a specific store by ID
+     */
+    public function show($id)
+    {
+        try {
+            $store = Store::with('user')
+                ->whereHas('user', function($query) {
+                    $query->where('is_approved', true);
+                })
+                ->find($id);
+
+            if (!$store) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Store not found'
+                ], 404);
+            }
+
+            // Add store image URL
+            $store->store_image_url = $store->store_image 
+                ? Storage::url($store->store_image)
+                : null;
+
+            return response()->json([
+                'success' => true,
+                'store' => $store
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving store: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Get products for a specific store
+     */
+    public function getStoreProducts($id)
+    {
+        try {
+            $store = Store::whereHas('user', function($query) {
+                $query->where('is_approved', true);
+            })->find($id);
+
+            if (!$store) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Store not found'
+                ], 404);
+            }
+
+            $products = $store->products()
+                ->where('is_available', true)
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get()
+                ->map(function ($product) {
+                    // Add image URL to each product
+                    $product->image_url = $product->image_path 
+                        ? Storage::url($product->image_path)
+                        : null;
+                    return $product;
+                });
+
+            return response()->json([
+                'success' => true,
+                'products' => $products
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving products: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

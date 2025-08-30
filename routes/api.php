@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
+// Admin routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('admin')->group(function () {
         Route::get('pending-vendors', [AdminController::class, 'getPendingVendors']);
@@ -48,6 +50,36 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('users/customers', [AdminController::class,'getAllCustomers']);
         Route::get('users/{id}', [AdminController::class, 'getUser']);
         Route::get('feedback', [FeedbackController::class, 'index']);
+    });
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    // Store routes
+    Route::prefix('store')->group(function () {
+        Route::get('/', [StoreController::class, 'index']);
+        Route::post('/', [StoreController::class, 'store']);
+        Route::put('/', [StoreController::class, 'update']);
+    });
+
+    // Product routes (vendor only)
+    Route::prefix('products')->group(function () {
+        Route::get('/', [ProductController::class, 'index']);
+        Route::post('/', [ProductController::class, 'store']);
+        Route::put('/{id}', [ProductController::class, 'update']);
+        Route::delete('/{id}', [ProductController::class, 'destroy']);
+    });
+
+    // Order routes (vendor only)
+    Route::prefix('orders')->group(function () {
+        Route::get('/', [OrderController::class, 'index']);
+        Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
+        Route::get('/statistics', [OrderController::class, 'statistics']);
+    });
+
+    // Feedback routes
+    Route::prefix('feedback')->group(function () {
+        Route::post('/', [FeedbackController::class, 'store']);
+        Route::get('/', [FeedbackController::class, 'index']);
     });
 });
 

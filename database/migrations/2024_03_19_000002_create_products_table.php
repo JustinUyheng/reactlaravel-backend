@@ -12,10 +12,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->text('description');
-            $table->enum('category', ['Meals', 'Drinks']);
+            $table->text('description')->nullable();
+            $table->enum('category', ['buffet', 'budget_meals', 'budget_snacks', 'snacks', 'drinks']);
             $table->decimal('price', 10, 2);
             $table->string('image_path')->nullable();
+            $table->boolean('is_available')->default(true);
             $table->timestamps();
         });
     }

@@ -38,7 +38,14 @@ class ProductController extends Controller
             $products = Product::where('store_id', $store->id)
                 ->orderBy('category')
                 ->orderBy('name')
-                ->get();
+                ->get()
+                ->map(function ($product) {
+                    // Add image URL to each product
+                    $product->image_url = $product->image_path 
+                        ? Storage::url($product->image_path)
+                        : null;
+                    return $product;
+                });
 
             return response()->json([
                 'success' => true,
@@ -53,12 +60,19 @@ class ProductController extends Controller
         }
     }
 
-        /**
+    /**
      * Create a new product
      */
     public function store(Request $request)
     {
         try {
+            // Debug: Log the incoming request
+            \Log::info('Product creation request:', [
+                'all_data' => $request->all(),
+                'content_type' => $request->header('Content-Type'),
+                'has_file' => $request->hasFile('image'),
+            ]);
+
             $validator = Validator::make($request->all(), [
                 'name' => 'required|string|max:255',
                 'description' => 'nullable|string',
@@ -68,6 +82,7 @@ class ProductController extends Controller
             ]);
 
             if ($validator->fails()) {
+                \Log::error('Validation failed:', $validator->errors()->toArray());
                 return response()->json([
                     'success' => false,
                     'message' => 'Validation failed',
@@ -91,7 +106,6 @@ class ProductController extends Controller
                 'description' => $request->description,
                 'category' => $request->category,
                 'price' => $request->price,
-                'is_available' => true,
             ];
 
             // Handle image upload
@@ -111,6 +125,7 @@ class ProductController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+            \Log::error('Product creation error:', ['error' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating product: ' . $e->getMessage()

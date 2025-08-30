@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Product extends Model
 {
@@ -24,10 +25,13 @@ class Product extends Model
         'is_available' => 'boolean',
     ];
 
+    protected $appends = ['image_url'];
+
     public function store()
     {
         return $this->belongsTo(Store::class);
     }
+
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
@@ -39,4 +43,4 @@ class Product extends Model
             ? Storage::url($this->image_path)
             : null;
     }
-} 
+}

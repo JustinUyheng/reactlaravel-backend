@@ -66,7 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('products')->group(function () {
         Route::get('/', [ProductController::class, 'index']);
         Route::post('/', [ProductController::class, 'store']);
-        Route::put('/{id}', [ProductController::class, 'update']);
+        Route::post('/{id}', [ProductController::class, 'update']);
         Route::delete('/{id}', [ProductController::class, 'destroy']);
     });
 
@@ -86,8 +86,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('stores')->group(function () {
-        Route::post('create', [StoreController::class, 'createStore']);
-        Route::get('vendor', [StoreController::class, 'getVendorStore']);
+        Route::post('create', [StoreController::class, 'store']);
+        Route::get('vendor', [StoreController::class, 'index']);
         Route::get('', [StoreController::class, 'index']);
     });
 });

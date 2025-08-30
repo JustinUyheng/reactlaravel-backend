@@ -9,6 +9,38 @@ use Illuminate\Support\Facades\Storage;
 
 class StoreController extends Controller
 {
+     /**
+     * Get all stores (for customers to browse)
+     */
+    public function getAllStores(Request $request)
+    {
+        try {
+            $stores = Store::with('user')
+                ->whereHas('user', function($query) {
+                    $query->where('is_approved', true); // Only show approved vendors
+                })
+                ->orderBy('business_name')
+                ->get()
+                ->map(function ($store) {
+                    // Add store image URL
+                    $store->store_image_url = $store->store_image 
+                        ? Storage::url($store->store_image)
+                        : null;
+                    return $store;
+                });
+
+            return response()->json([
+                'success' => true,
+                'stores' => $stores
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error retrieving stores: ' . $e->getMessage()
+            ], 500);
+        }
+    }
     /**
      * Get store information for the authenticated vendor
      */

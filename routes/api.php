@@ -88,7 +88,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('stores')->group(function () {
         Route::post('create', [StoreController::class, 'store']);
         Route::get('vendor', [StoreController::class, 'index']);
-        Route::get('', [StoreController::class, 'index']);
+        Route::get('/', [StoreController::class, 'getAllStores']);
     });
 });
 

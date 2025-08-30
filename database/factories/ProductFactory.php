@@ -16,26 +16,52 @@ class ProductFactory extends Factory
             'store_id' => Store::factory(),
             'name' => $this->faker->words(3, true),
             'description' => $this->faker->paragraph(),
-            'category' => $this->faker->randomElement(['Meals', 'Drinks']),
+            'category' => $this->faker->randomElement(['buffet', 'budget_meals', 'budget_snacks', 'snacks', 'drinks']),
             'price' => $this->faker->randomFloat(2, 5, 100),
             'image_path' => null, // This would typically be set when actually uploading an image
         ];
     }
 
-    public function meal(): self
+    public function buffet(): self
     {
         return $this->state(function (array $attributes) {
             return [
-                'category' => 'Meals',
+                'category' => 'buffet',
+            ];
+        });
+    }
+    public function budget_meals(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => 'budget_meals',
             ];
         });
     }
 
-    public function drink(): self
+    public function budget_snacks(): self
     {
         return $this->state(function (array $attributes) {
             return [
-                'category' => 'Drinks',
+                'category' => 'budget_snacks',
+            ];
+        });
+    }
+
+    public function snacks(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => 'snacks',
+            ];
+        });
+    }
+
+    public function drinks(): self
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'category' => 'drinks',
             ];
         });
     }

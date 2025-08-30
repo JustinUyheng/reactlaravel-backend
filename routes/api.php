@@ -4,7 +4,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StoreController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::prefix('auth')->group(function () {
     Route::post('register', [AuthController::class, 'register']);
@@ -15,10 +17,24 @@ Route::prefix('auth')->group(function () {
 // Test route to verify authentication
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user/profile', function () {
+        $user = auth()->user();
+        $userData = $user->toArray();
+
+        $userData['profile_picture_url'] = $user->profile_picture
+        ? Storage::url($user->profile_picture)
+        : null;
+
         return response()->json([
-            'user' => auth()->user(),
+            'user' => $userData,
             'message' => 'Profile retrieved successfully'
         ]);
+    });
+
+    // Profile picture routes
+    Route::prefix('profile')->group(function () {
+        Route::post('picture/upload', [ProfileController::class, 'uploadProfilePicture']);
+        Route::delete('picture', [ProfileController::class, 'deleteProfilePicture']);
+        Route::get('picture/{userId}', [ProfileController::class, 'getProfilePicture']);
     });
 });
 

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -20,6 +21,7 @@ class User extends Authenticatable
         'password',
         'role_id',
         'is_approved',
+        'profile_picture',
     ];
 
     protected $hidden = [
@@ -38,6 +40,15 @@ class User extends Authenticatable
         'role_id' => 'integer',
         'is_approved' => 'boolean',
     ];
+
+    public function getProfilePictureUrlAttribute()
+    {
+        return $this->profile_picture 
+            ? Storage::url($this->profile_picture)
+            : null;
+    }
+
+    protected $appends = ['profile_picture_url'];
 
     public function store()
     {

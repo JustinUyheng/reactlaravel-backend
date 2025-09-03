@@ -20,3 +20,4 @@ return new class extends Migration
         DB::table('products')->where('category', 'drinks')->update(['category' => 'Drinks']);
     }
 };
+

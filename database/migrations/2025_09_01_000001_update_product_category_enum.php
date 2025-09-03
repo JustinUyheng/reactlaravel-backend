@@ -17,3 +17,4 @@ return new class extends Migration
         DB::statement("ALTER TABLE products MODIFY category ENUM('Meals', 'Drinks') NOT NULL");
     }
 };
+

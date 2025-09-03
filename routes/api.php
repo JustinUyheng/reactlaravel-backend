@@ -73,8 +73,10 @@ Route::middleware('auth:sanctum')->group(function () {
     // Order routes (vendor only)
     Route::prefix('orders')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
+        Route::post('/', [OrderController::class, 'store']);
         Route::put('/{id}/status', [OrderController::class, 'updateStatus']);
         Route::get('/statistics', [OrderController::class, 'statistics']);
+        Route::get('/user', [OrderController::class, 'userOrders']);
     });
 
     // Feedback routes
